@@ -11,8 +11,13 @@ import { translations } from './data/translation';
 const sections = ["home", "prices", "projects"];
 
 function App() {
+  const [language, setLanguage] = useState("pl");
   const text = translations[language];
 
+  useEffect(() => {
+      document.documentElement.lang = language;
+  }, [language]);
+  
   const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
@@ -43,6 +48,7 @@ function App() {
 
   return (
     <>
+      <LanguageSwitch language={language} onChangeLanguage={setLanguage} />
       <SideNavigation activeSection={activeSection} onNavigate={scrollToSection} />
 
       <main>
