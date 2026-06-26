@@ -2,6 +2,15 @@ export default function AboutPage({ text }) {
   return (
     <section className="page hero-page" id="home" data-section="home">
       <div className="content narrow">
+        <header className="section-header">
+          <p className="corner-paper left" aria-hidden="true">
+              <img src="/projects/paper.png" alt="paper" />
+            </p>
+          <p className="corner-paper right" aria-hidden="true">
+            <img src="/projects/paper.png" alt="paper" />
+          </p>
+        </header>
+        
         <p className="kicker">{text.heroKicker}</p>
         <h1>{text.heroTitle}</h1>
         <p className="stack">

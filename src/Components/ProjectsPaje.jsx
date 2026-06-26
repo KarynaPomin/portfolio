@@ -1,29 +1,44 @@
-const projects = [
-  { titleKey: "projectOne", tech: "Next.js", previewClass: "preview-shop", url: "#" },
-  { titleKey: "projectTwo", tech: "React", previewClass: "preview-portfolio", url: "#" },
-  { titleKey: "projectThree", tech: "PHP", previewClass: "preview-business", url: "#" },
-  { titleKey: "projectFour", tech: "TypeScript", previewClass: "preview-blog", url: "#" },
-  { titleKey: "projectFive", tech: "JavaScript", previewClass: "preview-app", url: "#" },
-  { titleKey: "projectSix", tech: "MySQL", previewClass: "preview-food", url: "#" }
-];
+import { projects } from "../data/projects";
 
 export default function ProjectsPage({ text }) {
   return (
     <section className="page" id="projects" data-section="projects">
       <div className="content">
         <header className="section-header">
+
+          <p className="corner-paper left" aria-hidden="true">
+              <img src="/projects/paper.png" alt="paper" />
+            </p>
+          <p className="corner-paper right" aria-hidden="true">
+            <img src="/projects/paper.png" alt="paper" />
+          </p>
+
           <h2>{text.projectsTitle}</h2>
           <p>{text.projectsSubtitle}</p>
         </header>
 
         <div className="project-grid">
           {projects.map((project) => (
-            <article className="project-card" key={project.titleKey}>
-              <div className={`project-preview ${project.previewClass}`} />
+            <article className="project-card" key={project.title}>
+              <img
+                className="project-image"
+                src={project.image}
+                alt={project.title}
+              />
+
               <div className="project-body">
-                <h3>{text[project.titleKey]}</h3>
-                <span>{project.tech}</span>
-                <a href={project.url}>{text.viewProject}</a>
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+
+                <div className="project-tech">
+                  {project.tech.map((item) => (
+                    <span key={item}>{item}</span>
+                  ))}
+                </div>
+
+                <a href={project.url} target="_blank" rel="noreferrer">
+                  {text.viewProject}
+                </a>
               </div>
             </article>
           ))}

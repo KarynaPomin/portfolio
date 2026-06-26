@@ -3,11 +3,11 @@ export default function PricePage({ text }) {
     <section className="page" id="prices" data-section="prices">
       <div className="content">
         <header className="section-header">
-          <p className="corner-pig left" aria-hidden="true">
-            🐷
+          <p className="corner-paper left" aria-hidden="true">
+            <img src="/projects/paper.png" alt="paper" />
           </p>
-          <p className="corner-pig right" aria-hidden="true">
-            🐷
+          <p className="corner-paper right" aria-hidden="true">
+            <img src="/projects/paper.png" alt="paper" />
           </p>
           <h2>{text.pricesTitle}</h2>
           <p>{text.pricesSubtitle}</p>

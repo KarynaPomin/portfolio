@@ -1,6 +1,6 @@
 export const translations = {
   en: {
-    heroKicker: "🍎 Hi, I’m Karyna 🍎",
+    heroKicker: "Hi, I’m Karyna",
     heroTitle: "Junior Full-Stack Web Developer",
     quoteButton: "Price List",
     projectsButton: "View Projects",
@@ -58,7 +58,7 @@ export const translations = {
     viewProject: "View Project >"
   },
   pl: {
-    heroKicker: "🍎 Cześć, jestem Karyna 🍎",
+    heroKicker: "Cześć, jestem Karyna",
     heroTitle: "Junior Full-Stack Web Developer",
     quoteButton: "Cennik",
     projectsButton: "Zobacz projekty",

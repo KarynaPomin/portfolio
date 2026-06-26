@@ -24,13 +24,13 @@ export default function SideNavigation({ activeSection, onNavigate }) {
 
         return (
             <button
-            key={item.id}
-            className={`nav-button ${activeSection === item.id ? "active" : ""}`}
-            type="button"
-            aria-label={item.ariaLabel}
-            onClick={() => onNavigate(item.id)}
+              key={item.id}
+              className={`nav-button ${activeSection === item.id ? "active" : ""}`}
+              type="button"
+              aria-label={item.ariaLabel}
+              onClick={() => onNavigate(item.id)}
             >
-            <Icon />
+              <Icon />
             </button>
         );
     })}

@@ -24,7 +24,14 @@ body {
   color: var(--text);
   background: var(--bg);
   font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  /* font-family: "Trebuchet MS", "Segoe UI", sans-serif; */
   letter-spacing: 0;
+}
+
+.section-header h2,
+.kicker
+{
+  font-family: "Anta", sans-serif;
 }
 
 a {
@@ -100,7 +107,7 @@ button {
   border-radius: 50%;
   color: white;
   background: transparent;
-  font-size: 32px;
+  font-size: 45px;
   cursor: pointer;
   transition: transform 220ms ease;
 }
@@ -216,7 +223,6 @@ button {
 
 .contact dd {
   margin: 0;
-  font-weight: 800;
 }
 
 .section-header {
@@ -231,26 +237,32 @@ button {
   font-size: clamp(40px, 5vw, 58px);
 }
 
-.section-header p:not(.corner-pig) {
+.section-header p:not(.corner-paper) {
   margin: 10px 0 0;
   color: var(--muted);
   font-weight: 800;
 }
 
-.corner-pig {
+.corner-paper {
   position: absolute;
   top: -34px;
   margin: 0;
   font-size: 46px;
 }
 
-.corner-pig.left {
+.corner-paper.left {
   left: 0;
+  transform: scaleX(-1);
 }
 
-.corner-pig.right {
+.corner-paper.right {
   right: 0;
-  transform: scaleX(-1);
+}
+
+.corner-paper img {
+  width: 50px;  
+  height: auto;
+  display: block;
 }
 
 .pricing-list {
@@ -297,7 +309,7 @@ button {
 
 .price-rows h3 {
   margin: 0 0 5px;
-  font-size: 19px;
+  font-size: 18px;
 }
 
 .price-rows p {
@@ -346,6 +358,14 @@ button {
     linear-gradient(145deg, #d9d9d9, #bfc7d2);
 }
 
+.project-image {
+  width: 100%;
+  height: 150px;
+  display: block;
+  object-fit: cover;
+  background: #d8d8d8;
+}
+
 .preview-portfolio {
   background-image: linear-gradient(135deg, #d8d8d8 0 48%, #c4ceda 48% 100%);
 }
@@ -375,6 +395,13 @@ button {
   font-size: 16px;
 }
 
+.project-body p {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
 .project-body span {
   display: inline-flex;
   min-width: 66px;
@@ -394,6 +421,12 @@ button {
   color: var(--pink-soft);
   font-size: 11px;
   font-weight: 900;
+}
+
+.project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 @media (max-width: 860px) {
@@ -437,7 +470,7 @@ button {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .corner-pig {
+  .corner-paper {
     display: none;
   }
 }
