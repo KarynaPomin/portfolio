@@ -439,14 +439,14 @@ button {
     top: auto;
     bottom: 18px;
     width: min(330px, calc(100vw - 32px));
-    height: 76px;
+    height: 75px;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: 1fr;
     transform: translateX(-50%);
   }
 
   .nav-glow {
-    top: 8px;
+    top: 10px;
     left: var(--nav-left, 16.666%);
     transform: translateX(-50%);
   }
