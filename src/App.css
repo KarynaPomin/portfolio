@@ -24,7 +24,6 @@ body {
   color: var(--text);
   background: var(--bg);
   font-family: "Trebuchet MS", "Segoe UI", sans-serif;
-  /* font-family: "Trebuchet MS", "Segoe UI", sans-serif; */
   letter-spacing: 0;
 }
 
@@ -471,7 +470,11 @@ button {
   }
 
   .corner-paper {
-    display: none;
+    top: -18px;
+  }
+
+  .corner-paper img {
+    width: 36px;
   }
 }
 
