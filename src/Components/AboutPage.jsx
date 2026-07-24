@@ -4,17 +4,18 @@ export default function AboutPage({ text }) {
       <div className="content narrow">
         <header className="section-header">
           <p className="corner-paper left" aria-hidden="true">
-              <img src="/projects/paper.png" alt="paper" />
-            </p>
+            <img src="/projects/paper.png" alt="paper" />
+          </p>
           <p className="corner-paper right" aria-hidden="true">
             <img src="/projects/paper.png" alt="paper" />
           </p>
         </header>
-        
+
         <p className="kicker">{text.heroKicker}</p>
         <h1>{text.heroTitle}</h1>
         <p className="stack">
-          React <span /> JavaScript <span /> TypeScript <span /> PHP <span /> MySQL
+          React <span /> JavaScript <span /> TypeScript <span /> PHP <span />{" "}
+          MySQL
         </p>
 
         <div className="actions">
@@ -32,19 +33,23 @@ export default function AboutPage({ text }) {
             <div>
               <dt>GitHub</dt>
               <dd>
-                <a href="https://github.com/KarynaPomin">https://github.com/KarynaPomin</a>
+                <a href="https://github.com/KarynaPomin">
+                  https://github.com/KarynaPomin
+                </a>
               </dd>
             </div>
             <div>
               <dt>Email</dt>
               <dd>
-                <a href="mailto:karyna.pomin@gmail.com">karyna.pomin@gmail.com</a>
+                <a href="mailto:karyna.pomin@gmail.com">
+                  karyna.pomin@gmail.com
+                </a>
               </dd>
             </div>
             <div>
-              <dt>{text.phoneLabel}</dt>
+              <dt>Instagram</dt>
               <dd>
-                <a href="tel:+48574755459">+48 574 755 459</a>
+                <a href="#">...</a>
               </dd>
             </div>
           </dl>

@@ -1,22 +1,19 @@
-import './App.css';
-import AboutPage from './Components/AboutPage';
-import PricePage from './Components/PricePage';
-import ProjectsPage from './Components/ProjectsPaje';
-import { useEffect, useState } from 'react';
-import SideNavigation from './Components/SideNavigation';
-import LanguageSwitch from './Components/LanguageSwitch';
-import { translations } from './data/translation';
+import "./App.css";
+import AboutPage from "./Components/AboutPage";
+import PricePage from "./Components/PricePage";
+import ProjectsPage from "./Components/ProjectsPage";
+import ProjectPage from "./pages/ProjectPage";
+import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import SideNavigation from "./Components/SideNavigation";
+import LanguageSwitch from "./Components/LanguageSwitch";
+import { translations } from "./data/translation";
 
 const sections = ["home", "prices", "projects"];
 
-function App() {
-  const [language, setLanguage] = useState("pl");
-  const text = translations[language];
-
-  useEffect(() => {
-      document.documentElement.lang = language;
-  }, [language]);
-  
+// Everything that used to live directly in App() for the one-page
+// (scroll) layout now lives here, so it only runs on the "/" route.
+function HomePage({ text }) {
   const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
@@ -30,7 +27,7 @@ function App() {
           setActiveSection(visibleSection.target.dataset.section);
         }
       },
-      { threshold: [0.35, 0.6] }
+      { threshold: [0.35, 0.6] },
     );
 
     sections.forEach((section) => {
@@ -47,15 +44,35 @@ function App() {
 
   return (
     <>
-      <LanguageSwitch language={language} onChangeLanguage={setLanguage} />
-      <SideNavigation activeSection={activeSection} onNavigate={scrollToSection} />
-
+      <SideNavigation
+        activeSection={activeSection}
+        onNavigate={scrollToSection}
+      />
       <main>
-          <AboutPage text={text} />
-          <PricePage text={text} />
-          <ProjectsPage text={text} />
+        <AboutPage text={text} />
+        <PricePage text={text} />
+        <ProjectsPage text={text} />
       </main>
     </>
+  );
+}
+
+function App() {
+  const [language, setLanguage] = useState("pl");
+  const text = translations[language];
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
+
+  return (
+    <BrowserRouter>
+      <LanguageSwitch language={language} onChangeLanguage={setLanguage} />
+      <Routes>
+        <Route path="/" element={<HomePage text={text} />} />
+        <Route path="/projects/:slug" element={<ProjectPage text={text} />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
