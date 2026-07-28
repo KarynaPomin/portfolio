@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { projects } from "../data/projects";
+import { getProjectGallery } from "../data/project-images";
 
-export default function ProjectPage({ text }) {
+export default function ProjectPage({ text, lang }) {
   const { slug } = useParams();
   const project = projects.find((p) => p.slug === slug);
 
@@ -32,15 +33,25 @@ export default function ProjectPage({ text }) {
     );
   }
 
+  // Localized fields — projects.js now stores { en, pl, uk } objects
+  const title = project.title[lang] || project.title.en;
+  const description = project.description[lang] || project.description.en;
+  const longDescription =
+    project.longDescription[lang] || project.longDescription.en;
+  const notes = project.notes && (project.notes[lang] || project.notes.en);
+
+  // Gallery is auto-loaded from src/assets/pictures/<slug>/, cover image first
+  const gallery = getProjectGallery(project.slug);
+
   const visibleCount = 3;
 
-  const visibleImages = project.gallery.slice(
+  const visibleImages = gallery.slice(
     currentIndex,
     currentIndex + visibleCount,
   );
 
   const nextImages = () => {
-    if (currentIndex < project.gallery.length - visibleCount) {
+    if (currentIndex < gallery.length - visibleCount) {
       setCurrentIndex((prev) => prev + 1);
     }
   };
@@ -161,8 +172,8 @@ export default function ProjectPage({ text }) {
             <img src="/projects/paper.png" alt="paper" />
           </p>
 
-          <h2>{project.title}</h2>
-          <p>{project.description}</p>
+          <h2>{title}</h2>
+          <p>{description}</p>
         </header>
 
         <Link className="back-link" to="/#projects">
@@ -190,7 +201,7 @@ export default function ProjectPage({ text }) {
                   onClick={() => setSelectedImage(actualIndex)}
                   aria-label={`Open image ${actualIndex + 1}`}
                 >
-                  <img src={src} alt={`${project.title} ${actualIndex + 1}`} />
+                  <img src={src} alt={`${title} ${actualIndex + 1}`} />
                 </button>
               );
             })}
@@ -199,7 +210,7 @@ export default function ProjectPage({ text }) {
           <button
             className="gallery-arrow gallery-arrow-right"
             onClick={nextImages}
-            disabled={currentIndex >= project.gallery.length - visibleCount}
+            disabled={currentIndex >= gallery.length - visibleCount}
             aria-label="Next images"
           >
             →
@@ -232,7 +243,7 @@ export default function ProjectPage({ text }) {
                 e.stopPropagation();
 
                 setSelectedImage((prev) =>
-                  prev === 0 ? project.gallery.length - 1 : prev - 1,
+                  prev === 0 ? gallery.length - 1 : prev - 1,
                 );
 
                 setZoom(1);
@@ -253,8 +264,8 @@ export default function ProjectPage({ text }) {
               onClick={(e) => e.stopPropagation()}
             >
               <img
-                src={project.gallery[selectedImage]}
-                alt={`${project.title} ${selectedImage + 1}`}
+                src={gallery[selectedImage]}
+                alt={`${title} ${selectedImage + 1}`}
                 style={{
                   transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})`,
                 }}
@@ -269,7 +280,7 @@ export default function ProjectPage({ text }) {
                 e.stopPropagation();
 
                 setSelectedImage((prev) =>
-                  prev === project.gallery.length - 1 ? 0 : prev + 1,
+                  prev === gallery.length - 1 ? 0 : prev + 1,
                 );
 
                 setZoom(1);
@@ -298,7 +309,7 @@ export default function ProjectPage({ text }) {
 
         <div className="project-detail-body">
           <h3>{text.aboutProject}</h3>
-          <p>{project.longDescription}</p>
+          <p>{longDescription}</p>
 
           <h3>{text.technologies}</h3>
 
@@ -308,10 +319,10 @@ export default function ProjectPage({ text }) {
             ))}
           </div>
 
-          {project.notes && (
+          {notes && (
             <>
               <h3>{text.projectNotes}</h3>
-              <p>{project.notes}</p>
+              <p>{notes}</p>
             </>
           )}
 

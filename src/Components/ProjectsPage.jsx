@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { projects } from "../data/projects";
+import { getProjectCover } from "../data/project-images";
 
-export default function ProjectsPage({ text }) {
+export default function ProjectsPage({ text, lang }) {
   return (
     <section className="page" id="projects" data-section="projects">
       <div className="content">
@@ -18,30 +19,36 @@ export default function ProjectsPage({ text }) {
         </header>
 
         <div className="project-grid">
-          {projects.map((project) => (
-            <Link
-              className="project-card"
-              to={`/projects/${project.slug}`}
-              key={project.slug}
-            >
-              <img
-                className="project-image"
-                src={project.image}
-                alt={project.title}
-              />
+          {projects.map((project) => {
+            const title = project.title[lang] || project.title.en;
+            const description =
+              project.description[lang] || project.description.en;
 
-              <div className="project-body">
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
+            return (
+              <Link
+                className="project-card"
+                to={`/projects/${project.slug}`}
+                key={project.slug}
+              >
+                <img
+                  className="project-image"
+                  src={getProjectCover(project.slug)}
+                  alt={title}
+                />
 
-                <div className="project-tech">
-                  {project.tech.map((item) => (
-                    <span key={item}>{item}</span>
-                  ))}
+                <div className="project-body">
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+
+                  <div className="project-tech">
+                    {project.tech.map((item) => (
+                      <span key={item}>{item}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

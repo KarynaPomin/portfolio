@@ -13,7 +13,7 @@ const sections = ["home", "prices", "projects"];
 
 // Everything that used to live directly in App() for the one-page
 // (scroll) layout now lives here, so it only runs on the "/" route.
-function HomePage({ text }) {
+function HomePage({ text, lang }) {
   const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
@@ -51,7 +51,7 @@ function HomePage({ text }) {
       <main>
         <AboutPage text={text} />
         <PricePage text={text} />
-        <ProjectsPage text={text} />
+        <ProjectsPage text={text} lang={lang} />
       </main>
     </>
   );
@@ -69,8 +69,11 @@ function App() {
     <BrowserRouter>
       <LanguageSwitch language={language} onChangeLanguage={setLanguage} />
       <Routes>
-        <Route path="/" element={<HomePage text={text} />} />
-        <Route path="/projects/:slug" element={<ProjectPage text={text} />} />
+        <Route path="/" element={<HomePage text={text} lang={language} />} />
+        <Route
+          path="/projects/:slug"
+          element={<ProjectPage text={text} lang={language} />}
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -17,21 +17,40 @@ export default function PricePage({ text }) {
           <details className="price-group" open>
             <summary>{text.groupWebsites}</summary>
             <div className="price-rows">
-              <PriceRow title={text.onePageTitle} description={text.onePageDesc} price={text.onePagePrice} />
-              <PriceRow title={text.simpleSiteTitle} description={text.simpleSiteDesc} price={text.simpleSitePrice} />
-              <PriceRow title={text.largeSiteTitle} description={text.largeSiteDesc} price={text.largeSitePrice} />
+              <PriceRow
+                title={text.onePageTitle}
+                description={text.onePageDesc}
+                price={text.onePagePrice}
+              />
+              <PriceRow
+                title={text.simpleSiteTitle}
+                description={text.simpleSiteDesc}
+                price={text.simpleSitePrice}
+              />
+              <PriceRow
+                title={text.largeSiteTitle}
+                description={text.largeSiteDesc}
+                price={text.largeSitePrice}
+              />
             </div>
           </details>
 
           <details className="price-group" open>
             <summary>{text.groupAddons}</summary>
             <div className="price-rows compact">
-              <PriceRow title={text.contactForm} price={text.contactFormPrice} />
+              <PriceRow
+                title={text.contactForm}
+                price={text.contactFormPrice}
+              />
               <PriceRow title={text.gallery} price={text.galleryPrice} />
-              <PriceRow title={text.map} price={text.mapPrice} />
               <PriceRow title={text.blog} price={text.blogPrice} />
               <PriceRow title={text.multilang} price={text.multilangPrice} />
               <PriceRow title={text.booking} price={text.bookingPrice} />
+              <PriceRow title={text.animation} price={text.animationPrice} />
+              <PriceRow
+                title={text.customerReviewsSection}
+                price={text.customerReviewsSectionPrice}
+              />
               <PriceRow title={text.seo} price={text.seoPrice} />
             </div>
           </details>
@@ -49,8 +68,14 @@ export default function PricePage({ text }) {
           <details className="price-group">
             <summary>{text.groupHosting}</summary>
             <div className="price-rows compact">
-              <PriceRow title={text.hostingSetup} price={text.hostingSetupPrice} />
-              <PriceRow title={text.maintenance} price={text.maintenancePrice} />
+              <PriceRow
+                title={text.hostingSetup}
+                price={text.hostingSetupPrice}
+              />
+              <PriceRow
+                title={text.maintenance}
+                price={text.maintenancePrice}
+              />
             </div>
           </details>
         </div>
