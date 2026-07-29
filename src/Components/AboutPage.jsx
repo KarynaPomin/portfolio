@@ -46,7 +46,11 @@ export default function AboutPage({ text }) {
             <div>
               <dt>GitHub</dt>
               <dd>
-                <a href="https://github.com/KarynaPomin" target="_blank">
+                <a
+                  href="https://github.com/KarynaPomin"
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   https://github.com/KarynaPomin
                 </a>
               </dd>
@@ -65,6 +69,7 @@ export default function AboutPage({ text }) {
                 <a
                   href="https://www.instagram.com/web.by.kar?igsh=NXlsb2FnOXJiY2hm"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   web.by.kar
                 </a>

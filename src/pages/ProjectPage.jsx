@@ -61,11 +61,21 @@ export default function ProjectPage({ text, lang }) {
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        closeLightbox();
+        setSelectedImage(null);
+        setZoom(1);
+        setPosition({ x: 0, y: 0 });
       } else if (e.key === "ArrowLeft") {
-        showPrevImage();
+        setSelectedImage((prev) =>
+          prev === 0 ? gallery.length - 1 : prev - 1,
+        );
+        setZoom(1);
+        setPosition({ x: 0, y: 0 });
       } else if (e.key === "ArrowRight") {
-        showNextImage();
+        setSelectedImage((prev) =>
+          prev === gallery.length - 1 ? 0 : prev + 1,
+        );
+        setZoom(1);
+        setPosition({ x: 0, y: 0 });
       }
     };
 
