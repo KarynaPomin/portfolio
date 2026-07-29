@@ -1,22 +1,31 @@
+import styles from "./PricePage.module.css";
+import generalStyles from "../App.module.css";
+
 export default function PricePage({ text }) {
   return (
-    <section className="page" id="prices" data-section="prices">
-      <div className="content">
-        <header className="section-header">
-          <p className="corner-paper left" aria-hidden="true">
-            <img src="/projects/paper.png" alt="paper" />
+    <section className={generalStyles.page} id="prices" data-section="prices">
+      <div className={generalStyles.content}>
+        <header className={generalStyles.section_header}>
+          <p
+            className={`${generalStyles.corner_paper} ${generalStyles.left}`}
+            aria-hidden="true"
+          >
+            <img src="/projects/paper.png" alt="paper" loading="lazy" />
           </p>
-          <p className="corner-paper right" aria-hidden="true">
-            <img src="/projects/paper.png" alt="paper" />
+          <p
+            className={`${generalStyles.corner_paper} ${generalStyles.right}`}
+            aria-hidden="true"
+          >
+            <img src="/projects/paper.png" alt="paper" loading="lazy" />
           </p>
           <h2>{text.pricesTitle}</h2>
           <p>{text.pricesSubtitle}</p>
         </header>
 
-        <div className="pricing-list">
-          <details className="price-group" open>
+        <div className={styles.pricing_list}>
+          <details className={styles.price_group} open>
             <summary>{text.groupWebsites}</summary>
-            <div className="price-rows">
+            <div className={styles.price_rows}>
               <PriceRow
                 title={text.onePageTitle}
                 description={text.onePageDesc}
@@ -35,9 +44,9 @@ export default function PricePage({ text }) {
             </div>
           </details>
 
-          <details className="price-group" open>
+          <details className={styles.price_group} open>
             <summary>{text.groupAddons}</summary>
-            <div className="price-rows compact">
+            <div className={`${styles.price_rows} ${styles.compact}`}>
               <PriceRow
                 title={text.contactForm}
                 price={text.contactFormPrice}
@@ -55,9 +64,9 @@ export default function PricePage({ text }) {
             </div>
           </details>
 
-          <details className="price-group">
+          <details className={styles.price_group}>
             <summary>{text.groupMedia}</summary>
-            <div className="price-rows compact">
+            <div className={`${styles.price_rows} ${styles.compact}`}>
               <PriceRow title={text.photos} price={text.photosPrice} />
               <PriceRow title={text.shortVideo} price={text.shortVideoPrice} />
               <PriceRow title={text.photoEdit} price={text.photoEditPrice} />
@@ -65,9 +74,9 @@ export default function PricePage({ text }) {
             </div>
           </details>
 
-          <details className="price-group">
+          <details className={styles.price_group}>
             <summary>{text.groupHosting}</summary>
-            <div className="price-rows compact">
+            <div className={`${styles.price_rows} ${styles.compact}`}>
               <PriceRow
                 title={text.hostingSetup}
                 price={text.hostingSetupPrice}

@@ -1,0 +1,91 @@
+.pricing_list {
+  display: grid;
+  gap: 16px;
+}
+
+/* price_group */
+
+.price_group {
+  overflow: hidden;
+  border-radius: 20px 20px 4px 4px;
+  background: rgba(13, 22, 39, 0.34);
+}
+
+.price_group summary {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 34px;
+  border-radius: 20px;
+  color: var(--violet);
+  background: var(--panel-soft);
+  font-size: 19px;
+  font-weight: 900;
+  cursor: pointer;
+  list-style: none;
+}
+
+.price_group summary::-webkit-details-marker {
+  display: none;
+}
+
+/* price_rows */
+
+.price_rows {
+  display: grid;
+  gap: 25px;
+  padding: 24px 38px 30px;
+}
+
+.price_rows article {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 22px;
+  align-items: start;
+}
+
+.price_rows h3 {
+  margin: 0 0 5px;
+  font-size: 18px;
+}
+
+.price_rows p {
+  max-width: 610px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.25;
+}
+
+.price_rows strong {
+  white-space: nowrap;
+  font-size: 20px;
+}
+
+.price_rows.compact {
+  gap: 18px;
+}
+
+.price_rows.compact article {
+  align-items: center;
+}
+
+.price_rows.compact h3 {
+  margin: 0;
+}
+
+@media (max-width: 590px) {
+  .price_group summary {
+    padding: 0 22px;
+  }
+
+  /* price_rows */
+
+  .price_rows {
+    padding: 20px 22px 26px;
+  }
+
+  .price_rows article {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}

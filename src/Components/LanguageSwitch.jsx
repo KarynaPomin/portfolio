@@ -1,8 +1,10 @@
+import styles from "./LanguageSwitch.module.css";
+
 export default function LanguageSwitch({ language, onChangeLanguage }) {
   return (
-    <div className="language-switch" aria-label="Language switch">
+    <div className={styles.language_switch} aria-label="Language switch">
       <button
-        className={`language-button ${language === "uk" ? "active" : ""}`}
+        className={`${styles.language_button} ${language === "uk" ? styles.active : ""}`}
         type="button"
         onClick={() => onChangeLanguage("uk")}
       >
@@ -12,7 +14,7 @@ export default function LanguageSwitch({ language, onChangeLanguage }) {
       <span>|</span>
 
       <button
-        className={`language-button ${language === "en" ? "active" : ""}`}
+        className={`${styles.language_button} ${language === "en" ? styles.active : ""}`}
         type="button"
         onClick={() => onChangeLanguage("en")}
       >
@@ -22,7 +24,7 @@ export default function LanguageSwitch({ language, onChangeLanguage }) {
       <span>|</span>
 
       <button
-        className={`language-button ${language === "pl" ? "active" : ""}`}
+        className={`${styles.language_button} ${language === "pl" ? styles.active : ""}`}
         type="button"
         onClick={() => onChangeLanguage("pl")}
       >

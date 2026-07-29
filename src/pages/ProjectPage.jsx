@@ -1,7 +1,24 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { projects } from "../data/projects";
 import { getProjectGallery } from "../data/project-images";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+
+import styles from "./ProjectPage.module.css";
+import generalStyles from "../App.module.css";
+
+const getVisibleCount = () => {
+  if (typeof window === "undefined") return 3;
+  const width = window.innerWidth;
+  if (width <= 590) return 1;
+  if (width <= 860) return 2;
+  return 3;
+};
 
 export default function ProjectPage({ text, lang }) {
   const { slug } = useParams();
@@ -13,37 +30,68 @@ export default function ProjectPage({ text, lang }) {
   const [zoom, setZoom] = useState(1);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
+  const containerRef = useRef(null);
+  const imgNaturalRef = useRef({ width: 0, height: 0 });
+
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
-  const [pointers, setPointers] = useState(new Map());
-  const [pinchStartDistance, setPinchStartDistance] = useState(null);
-  const [pinchStartZoom, setPinchStartZoom] = useState(1);
+  const [visibleCount, setVisibleCount] = useState(getVisibleCount);
+
+  const pointersRef = useRef(new Map());
+  const pinchRef = useRef({ distance: null, zoom: 1 });
+  const lastTapRef = useRef(0);
+
+  const gallery = project ? getProjectGallery(project.slug) : [];
+
+  useEffect(() => {
+    const handleResize = () => setVisibleCount(getVisibleCount());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    setCurrentIndex((prev) =>
+      Math.min(prev, Math.max(0, gallery.length - visibleCount)),
+    );
+  }, [visibleCount, gallery.length]);
+
+  useEffect(() => {
+    if (selectedImage === null) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        closeLightbox();
+      } else if (e.key === "ArrowLeft") {
+        showPrevImage();
+      } else if (e.key === "ArrowRight") {
+        showNextImage();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedImage, gallery.length]);
 
   if (!project) {
     return (
-      <section className="page project-page">
-        <div className="content">
-          <p className="kicker">{text.projectNotFound}</p>
-          <Link className="back-link" to="/#projects">
-            ← {text.backToProjects}
+      <section className={generalStyles.page}>
+        <div className={generalStyles.content}>
+          <p className={generalStyles.kicker}>{text.projectNotFound}</p>
+          <Link className={styles.back_link} to="/#projects">
+            <ArrowBackIcon className={styles.back_link_icon} />{" "}
+            {text.backToProjects}
           </Link>
         </div>
       </section>
     );
   }
 
-  // Localized fields — projects.js now stores { en, pl, uk } objects
   const title = project.title[lang] || project.title.en;
   const description = project.description[lang] || project.description.en;
   const longDescription =
     project.longDescription[lang] || project.longDescription.en;
   const notes = project.notes && (project.notes[lang] || project.notes.en);
-
-  // Gallery is auto-loaded from src/assets/pictures/<slug>/, cover image first
-  const gallery = getProjectGallery(project.slug);
-
-  const visibleCount = 3;
 
   const visibleImages = gallery.slice(
     currentIndex,
@@ -67,37 +115,77 @@ export default function ProjectPage({ text, lang }) {
     setPosition({ x: 0, y: 0 });
   };
 
+  const closeLightbox = () => {
+    setSelectedImage(null);
+    resetImageView();
+  };
+
+  const showPrevImage = () => {
+    setSelectedImage((prev) => (prev === 0 ? gallery.length - 1 : prev - 1));
+    resetImageView();
+  };
+
+  const showNextImage = () => {
+    setSelectedImage((prev) => (prev === gallery.length - 1 ? 0 : prev + 1));
+    resetImageView();
+  };
+
   const changeZoom = (amount) => {
     setZoom((prev) => {
-      const newZoom = Math.min(3, Math.max(0.5, prev + amount));
-
-      if (newZoom === 1) {
-        setPosition({ x: 0, y: 0 });
-      }
-
+      const newZoom = Math.min(3, Math.max(1, prev + amount));
+      setPosition((prevPos) =>
+        newZoom === 1 ? { x: 0, y: 0 } : clampPosition(prevPos, newZoom),
+      );
       return newZoom;
     });
   };
 
-  const getDistance = (p1, p2) => {
-    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+  const getContainSize = () => {
+    const container = containerRef.current;
+    const nat = imgNaturalRef.current;
+    if (!container || !nat.width || !nat.height) return null;
+
+    const cw = container.clientWidth;
+    const ch = container.clientHeight;
+    const fitScale = Math.min(cw / nat.width, ch / nat.height);
+
+    return {
+      width: nat.width * fitScale,
+      height: nat.height * fitScale,
+      cw,
+      ch,
+    };
   };
+
+  const clampPosition = (pos, z) => {
+    const base = getContainSize();
+    if (!base) return { x: 0, y: 0 };
+
+    const scaledW = base.width * z;
+    const scaledH = base.height * z;
+
+    const maxX = Math.max(0, (scaledW - base.cw) / 2);
+    const maxY = Math.max(0, (scaledH - base.ch) / 2);
+
+    return {
+      x: Math.min(maxX, Math.max(-maxX, pos.x)),
+      y: Math.min(maxY, Math.max(-maxY, pos.y)),
+    };
+  };
+
+  const getDistance = (p1, p2) => Math.hypot(p2.x - p1.x, p2.y - p1.y);
 
   const handlePointerDown = (e) => {
     e.currentTarget.setPointerCapture(e.pointerId);
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-    setPointers((prev) => {
-      const next = new Map(prev);
-      next.set(e.pointerId, {
-        x: e.clientX,
-        y: e.clientY,
-      });
-      return next;
-    });
-
-    if (zoom > 1) {
+    if (pointersRef.current.size === 2) {
+      const pts = Array.from(pointersRef.current.values());
+      pinchRef.current.distance = getDistance(pts[0], pts[1]);
+      pinchRef.current.zoom = zoom;
+      setIsDragging(false);
+    } else if (zoom > 1) {
       setIsDragging(true);
-
       setDragStart({
         x: e.clientX - position.x,
         y: e.clientY - position.y,
@@ -106,198 +194,223 @@ export default function ProjectPage({ text, lang }) {
   };
 
   const handlePointerMove = (e) => {
-    setPointers((prev) => {
-      const next = new Map(prev);
+    if (!pointersRef.current.has(e.pointerId)) return;
+    pointersRef.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
-      if (next.has(e.pointerId)) {
-        next.set(e.pointerId, {
-          x: e.clientX,
-          y: e.clientY,
-        });
+    if (pointersRef.current.size === 2) {
+      const pts = Array.from(pointersRef.current.values());
+      const distance = getDistance(pts[0], pts[1]);
+
+      if (pinchRef.current.distance) {
+        const scale = distance / pinchRef.current.distance;
+        const newZoom = Math.min(3, Math.max(1, pinchRef.current.zoom * scale));
+        setZoom(newZoom);
+        setPosition((prev) =>
+          newZoom === 1 ? { x: 0, y: 0 } : clampPosition(prev, newZoom),
+        );
       }
-
-      return next;
-    });
-
-    if (pointers.size === 2) {
-      const pointerArray = Array.from(pointers.values());
-
-      const distance = getDistance(pointerArray[0], pointerArray[1]);
-
-      if (pinchStartDistance) {
-        const scale = distance / pinchStartDistance;
-
-        setZoom(Math.min(3, Math.max(1, pinchStartZoom * scale)));
-      }
-
       return;
     }
 
     if (isDragging && zoom > 1) {
-      setPosition({
+      const next = {
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y,
-      });
+      };
+      setPosition(clampPosition(next, zoom));
     }
   };
 
   const handlePointerUp = (e) => {
-    setPointers((prev) => {
-      const next = new Map(prev);
-      next.delete(e.pointerId);
-      return next;
-    });
-
+    pointersRef.current.delete(e.pointerId);
+    if (pointersRef.current.size < 2) {
+      pinchRef.current.distance = null;
+    }
     setIsDragging(false);
-    setPinchStartDistance(null);
   };
 
   const handleWheel = (e) => {
     e.preventDefault();
+    changeZoom(e.deltaY < 0 ? 0.1 : -0.1);
+  };
 
-    const amount = e.deltaY < 0 ? 0.1 : -0.1;
+  const handleDoubleTap = () => {
+    const now = Date.now();
+    const isDoubleTap = now - lastTapRef.current < 300;
+    lastTapRef.current = now;
+    if (!isDoubleTap) return;
 
-    changeZoom(amount);
+    if (zoom > 1) {
+      resetImageView();
+    } else {
+      setZoom(2);
+      setPosition((prev) => clampPosition(prev, 2));
+    }
   };
 
   return (
-    <section className="page project-page">
-      <div className="content">
-        <header className="section-header">
-          <p className="corner-paper left" aria-hidden="true">
-            <img src="/projects/paper.png" alt="paper" />
+    <section className={generalStyles.page}>
+      <div className={generalStyles.content}>
+        <header className={generalStyles.section_header}>
+          <p
+            className={`${generalStyles.corner_paper} ${generalStyles.left}`}
+            aria-hidden="true"
+          >
+            <img src="/projects/paper.png" alt="paper" loading="lazy" />
           </p>
 
-          <p className="corner-paper right" aria-hidden="true">
-            <img src="/projects/paper.png" alt="paper" />
+          <p
+            className={`${generalStyles.corner_paper} ${generalStyles.right}`}
+            aria-hidden="true"
+          >
+            <img src="/projects/paper.png" alt="paper" loading="lazy" />
           </p>
 
           <h2>{title}</h2>
           <p>{description}</p>
         </header>
 
-        <Link className="back-link" to="/#projects">
-          ← {text.backToProjects}
+        <Link className={styles.back_link} to="/#projects">
+          <ArrowBackIcon className={styles.back_link_icon} />{" "}
+          {text.backToProjects}
         </Link>
 
-        <div className="project-gallery-wrapper">
+        <div className={styles.project_gallery_wrapper}>
           <button
-            className="gallery-arrow gallery-arrow-left"
+            className={styles.gallery_arrow}
             onClick={prevImages}
             disabled={currentIndex === 0}
             aria-label="Previous images"
           >
-            ←
+            <ArrowLeftIcon />
           </button>
 
-          <div className="project-gallery">
+          <div className={styles.project_gallery}>
             {visibleImages.map((src, index) => {
               const actualIndex = currentIndex + index;
 
               return (
                 <button
-                  className="gallery-image-button"
+                  className={styles.gallery_image_button}
                   key={src + actualIndex}
                   onClick={() => setSelectedImage(actualIndex)}
                   aria-label={`Open image ${actualIndex + 1}`}
                 >
-                  <img src={src} alt={`${title} ${actualIndex + 1}`} />
+                  <img
+                    src={src}
+                    alt={`${title} ${actualIndex + 1}`}
+                    loading="lazy"
+                  />
+                  <span className={styles.gallery_image_number}>
+                    {actualIndex + 1}
+                  </span>
                 </button>
               );
             })}
           </div>
 
           <button
-            className="gallery-arrow gallery-arrow-right"
+            className={styles.gallery_arrow}
             onClick={nextImages}
             disabled={currentIndex >= gallery.length - visibleCount}
             aria-label="Next images"
           >
-            →
+            <ArrowRightIcon />
           </button>
         </div>
 
         {selectedImage !== null && (
-          <div
-            className="image-lightbox"
-            onClick={() => {
-              setSelectedImage(null);
-              setZoom(1);
-            }}
-          >
+          <div className={styles.image_lightbox} onClick={closeLightbox}>
             <button
-              className="lightbox-close"
+              className={styles.lightbox_close}
               type="button"
-              onClick={() => {
-                setSelectedImage(null);
-                setZoom(1);
-              }}
+              onClick={closeLightbox}
+              aria-label="Close"
             >
-              ×
+              <CloseIcon />
             </button>
 
+            <span className={styles.lightbox_counter}>
+              {selectedImage + 1} / {gallery.length}
+            </span>
+
             <button
-              className="lightbox-arrow lightbox-arrow-left"
+              className={`${styles.lightbox_arrow} ${styles.lightbox_arrow_left}`}
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-
-                setSelectedImage((prev) =>
-                  prev === 0 ? gallery.length - 1 : prev - 1,
-                );
-
-                setZoom(1);
+                showPrevImage();
               }}
+              aria-label="Previous image"
             >
-              ←
+              <ArrowLeftIcon />
             </button>
 
             <div
-              className={`lightbox-image-container ${
-                zoom > 1 ? "is-zoomed" : ""
+              className={`${styles.lightbox_image_container} ${
+                zoom > 1 ? styles.is_zoomed : ""
               }`}
+              ref={containerRef}
               onPointerDown={handlePointerDown}
               onPointerMove={handlePointerMove}
               onPointerUp={handlePointerUp}
               onPointerCancel={handlePointerUp}
               onWheel={handleWheel}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDoubleTap();
+              }}
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                if (zoom > 1) {
+                  resetImageView();
+                } else {
+                  setZoom(2);
+                  setPosition((prev) => clampPosition(prev, 2));
+                }
+              }}
             >
               <img
                 src={gallery[selectedImage]}
                 alt={`${title} ${selectedImage + 1}`}
+                onLoad={(e) => {
+                  imgNaturalRef.current = {
+                    width: e.target.naturalWidth,
+                    height: e.target.naturalHeight,
+                  };
+                }}
                 style={{
                   transform: `translate(${position.x}px, ${position.y}px) scale(${zoom})`,
                 }}
                 draggable="false"
+                loading="lazy"
               />
             </div>
 
             <button
-              className="lightbox-arrow lightbox-arrow-right"
+              className={`${styles.lightbox_arrow} ${styles.lightbox_arrow_right}`}
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-
-                setSelectedImage((prev) =>
-                  prev === gallery.length - 1 ? 0 : prev + 1,
-                );
-
-                setZoom(1);
+                showNextImage();
               }}
+              aria-label="Next image"
             >
-              →
+              <ArrowRightIcon />
             </button>
 
-            <div className="zoom-controls" onClick={(e) => e.stopPropagation()}>
+            <div
+              className={styles.zoom_controls}
+              onClick={(e) => e.stopPropagation()}
+            >
               <button type="button" onClick={() => changeZoom(-0.25)}>
-                −
+                <RemoveIcon />
               </button>
 
               <span>{Math.round(zoom * 100)}%</span>
 
               <button type="button" onClick={() => changeZoom(0.25)}>
-                +
+                <AddIcon />
               </button>
 
               <button type="button" onClick={resetImageView}>
@@ -307,13 +420,13 @@ export default function ProjectPage({ text, lang }) {
           </div>
         )}
 
-        <div className="project-detail-body">
+        <div className={styles.project_detail_body}>
           <h3>{text.aboutProject}</h3>
           <p>{longDescription}</p>
 
           <h3>{text.technologies}</h3>
 
-          <div className="project-tech">
+          <div className={styles.project_tech}>
             {project.tech.map((item) => (
               <span key={item}>{item}</span>
             ))}
@@ -326,10 +439,10 @@ export default function ProjectPage({ text, lang }) {
             </>
           )}
 
-          <div className="project-links">
+          <div className={styles.project_links}>
             {project.github && (
               <a
-                className="secondary-action"
+                className={generalStyles.secondary_action}
                 href={project.github}
                 target="_blank"
                 rel="noreferrer"
@@ -340,7 +453,7 @@ export default function ProjectPage({ text, lang }) {
 
             {project.url && (
               <a
-                className="primary-action"
+                className={generalStyles.primary_action}
                 href={project.url}
                 target="_blank"
                 rel="noreferrer"

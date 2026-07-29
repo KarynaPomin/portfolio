@@ -11,8 +11,6 @@ import { translations } from "./data/translation";
 
 const sections = ["home", "prices", "projects"];
 
-// Everything that used to live directly in App() for the one-page
-// (scroll) layout now lives here, so it only runs on the "/" route.
 function HomePage({ text, lang }) {
   const [activeSection, setActiveSection] = useState("home");
 

@@ -1,33 +1,46 @@
+import styles from "./AboutPage.module.css";
+import generalStyles from "../App.module.css";
+
 export default function AboutPage({ text }) {
   return (
-    <section className="page hero-page" id="home" data-section="home">
-      <div className="content narrow">
-        <header className="section-header">
-          <p className="corner-paper left" aria-hidden="true">
-            <img src="/projects/paper.png" alt="paper" />
+    <section
+      className={`${generalStyles.page} ${generalStyles.hero_page}`}
+      id="home"
+      data-section="home"
+    >
+      <div className={`${generalStyles.content} ${generalStyles.narrow}`}>
+        <header className={generalStyles.section_header}>
+          <p
+            className={`${generalStyles.corner_paper} ${generalStyles.left}`}
+            aria-hidden="true"
+          >
+            <img src="/projects/paper.png" alt="paper" loading="lazy" />
           </p>
-          <p className="corner-paper right" aria-hidden="true">
-            <img src="/projects/paper.png" alt="paper" />
+          <p
+            className={`${generalStyles.corner_paper} ${generalStyles.right}`}
+            aria-hidden="true"
+          >
+            <img src="/projects/paper.png" alt="paper" loading="lazy" />
           </p>
         </header>
 
-        <p className="kicker">{text.heroKicker}</p>
+        <p className={generalStyles.kicker}>{text.heroKicker}</p>
         <h1>{text.heroTitle}</h1>
-        <p className="stack">
+        <p className={styles.stack}>
           React <span /> JavaScript <span /> TypeScript <span /> PHP <span />{" "}
           MySQL
         </p>
 
-        <div className="actions">
-          <a className="primary-action" href="#prices">
+        <div className={generalStyles.actions}>
+          <a className={generalStyles.primary_action} href="#prices">
             {text.quoteButton}
           </a>
-          <a className="secondary-action" href="#projects">
+          <a className={generalStyles.secondary_action} href="#projects">
             {text.projectsButton}
           </a>
         </div>
 
-        <div className="contact">
+        <div className={styles.contact}>
           <h2>{text.contactTitle}</h2>
           <dl>
             <div>
