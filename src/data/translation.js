@@ -99,7 +99,7 @@ export const translations = {
     contactFormPrice: "від 80 zł",
 
     gallery: "Фотогалерея",
-    galleryPrice: "від $25",
+    galleryPrice: "від 80 zł",
 
     blog: "Блог / Новини",
     blogPrice: "від 250 zł",
@@ -188,7 +188,7 @@ export const translations = {
     contactForm: "Formularz kontaktowy",
     contactFormPrice: "od 80 zł",
     gallery: "Galeria zdjęć",
-    galleryPrice: "od $25",
+    galleryPrice: "od 80 zł",
     blog: "Blog / aktualności",
     blogPrice: "od 250 zł",
     multilang: "Wielojęzyczność",
